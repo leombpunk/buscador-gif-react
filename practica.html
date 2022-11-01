@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>practica react con midudev</title>
+    <style>
+      picture {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 100px;
+      }
+      picture.is-small {
+        width: 50px;
+      }
+      picture.is-large {
+        width: 200px;
+      }
+      img {
+        box-shadow: 0 0 10px #000;
+        border-radius: 50%;
+        width: 100%;
+      }
+      img.disabled {
+        opacity: 0.5;
+      }
+    </style>
+    <!-- agregando react como libreria -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <!-- JSX -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body>
+    <!-- pagina de ejemplo para la practica en react (esto es sin react)-->
+    <h1>Women in Tech</h1>
+    <div id="app">
+      <!-- <picture>
+        <img src="https://randomuser.me/api/portraits/women/93.jpg" alt="tu vieja" />
+        Fulanita
+      </picture>
+      <picture>
+        <img src="https://randomuser.me/api/portraits/women/24.jpg" alt="tu vieja" />
+        Menganita
+      </picture> -->
+    </div>
+
+    <script type="text/babel">
+    //props = propiedades del compomente, sirve para hacer que el comportamiento
+    // y la interfaz del componente cambie
+    //state = estado del componente
+      const $app = document.getElementById("app");
+
+      //para crear un estado -> se importa de React
+      const useState = React.useState;
+
+      //implementando react
+      // const h = React.createElement;
+      
+      //avatar desconstruyendo props
+      // const Avatar = ({id, name = "valor por defecto", size}) => {
+      const Avatar = props => {
+        //si no se le pasa el id, no muestra ninguna imagen y se ve feo
+        //renderizado condicional
+        //renderiza una cosa u otra
+        //renderizo desde el return con una ternaria
+
+        //alterar el estado del componente
+        //el true significa que esta activo
+        // const state = useState(true); //el useState devuelve una variable
+        //state es un array donde la primer posicion indica si esta activo o no
+        //y la segunda posicion es para decirle que se active o no
+        // const enabled = state[0]; 
+        // const setEnabled = state[1];
+
+        //es lo mismo con deconstruccion
+        const [enabled, setEnabled] = useState(true);
+        //si uso el avatar con props deconstruido no hace falta usar props.talPropiedad
+        const src = `https://randomuser.me/api/portraits/women/${props.id}.jpg`;
+        const imgClassName = enabled ? "" : "disabled";
+        let pictureClassName = "";
+        if (props.size === "small"){
+          pictureClassName = "is-small";
+        } else if (props.size === "large"){
+          pictureClassName = "is-large";
+        }
+        // const pictureClassName = props.size === "small" ? "is-small" : ""; 
+
+        // return h("img", {src});
+        //con JSX
+        return (//el return solo puede retornar una elemento html -> puede estar anidado
+          <picture className={pictureClassName}>
+            {
+              props.id ? 
+                (
+                  <img className={imgClassName} onClick={()=>{
+                    setEnabled(!enabled);
+                  }}
+                  //si es un string no hacen falta las { }
+                  //onClick={(event)=>{
+                    //event hace referencia a si mismo, en este caso la etiqueta img
+                    //event.target.classList.toggle("disabled");
+                    // alert("Click!");
+                  //}} 
+                  src={src} />
+                ) : 
+                (
+                  <i>Sin imagen</i>
+                )
+            }
+            <span> {enabled ? props.name : "Desactivada"} </span>
+          </picture>
+        );
+      };
+      //raro
+      // ReactDOM.render(h(Avatar, {id:15}), $app);
+      // ReactDOM.render(
+      //   h("div", null, [h(Avatar, { id: 15 }), h(Avatar, { id: 64 })]),
+      //   $app
+      // );
+
+      function Contador(){
+        //esto es lo mismo que
+        const [contadorValue, actualizarContador] = useState(0);
+        //esto
+        // let contadorState = useState(0);
+        // let contadorValue = contadorState[0];
+        // let actualizarContador = contadorState[1];
+
+        return (
+          // no renderiza nada y permite renderizar todos los elementos que contenga dentro
+          // <React.fragment> //es lo mismo que <></> si se ocupa un plugin de babel
+            // <button>Incrementrar +</button>
+            // <button>Decrementrar -</button> 
+          // </React.fragment>
+          <div>
+            <span>{contadorValue}</span>
+            <button onClick={()=>{
+              actualizarContador(contadorValue + 1);
+            }}>Incrementrar +</button>
+            <button onClick={()=>{
+              actualizarContador(contadorValue - 1);
+            }}>Decrementrar -</button>  
+          </div>
+        );
+      }
+
+      //con JSX
+      ReactDOM.render(
+        <div>
+          <Contador />
+          <Avatar />
+          <Avatar id={10} name="Rita" size="small" />
+          <Avatar id={94} name="Perrita" />
+          <Avatar id={45} name="Zorrita" size="large" />
+        </div>,
+        $app
+      );
+
+      /*
+      // funcion Avatar, se crea un componente
+      const Avatar = props => {
+        const src = `https://randomuser.me/api/portraits/women/${props.id}.jpg`;
+        return `
+        <picture>
+          <img src="${src}" />
+          ${props.name}
+        </picture>`;
+      };
+
+      $app.innerHTML += Avatar({id: '19', 'name': 'Marcela'});
+      $app.innerHTML += Avatar({id: '24', 'name': 'Sandra'});
+
+      //añadiendo eventos a los componentes
+      //selecciono todos los elementos img
+      //esto funciona en cualquier caso, con o sin react, con o sin jsx
+      $app.querySelectorAll('img').forEach( img => {
+        // para cada elemento seleccionado le añado un evento de escucha
+        img.addEventListener('click', () => {
+          //La propiedad de sólo lectura Element.classList devuelve una colección 
+          //activa de DOMTokenList de los atributos de clase del elemento.
+          img.classList.toggle('disabled'); //agrega una clase 'disabled' al elemento img -> sea agrega a la etiqueta style
+        });
+      });
+*/
+    </script>
+  </body>
+</html>

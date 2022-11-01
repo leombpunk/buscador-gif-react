@@ -1,0 +1,27 @@
+.Gif {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    margin: 16px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.Gif h4 {
+    margin: 0;
+}
+
+.Gif img {
+    object-fit: scale-down;
+}
+
+.Gif-link {
+    color: #000;
+    display: block;
+    text-decoration: none;
+    position: relative;
+    width: 100%;
+  }
